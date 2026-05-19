@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Nutan Meena | Cloud & AI Portfolio — Hyper Animated</title>
+  <!-- Google Fonts + Remix Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-deep: #0a0a0f;
+      --bg-card: #111115;
+      --text-primary: #f0f3fa;
+      --text-secondary: #a0a5b9;
+      --accent: #7c5cff;
+      --accent-glow: rgba(124, 92, 255, 0.4);
+      --border-light: rgba(255, 255, 255, 0.06);
+      --transition-smooth: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      --shadow-md: 0 20px 35px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text-secondary);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--text-primary);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .section {
+      padding: 5rem 0 4rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .section:last-child { border-bottom: none; }
+
+    .section__title {
+      font-size: 2.4rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff, var(--accent));
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      display: inline-block;
+      width: 100%;
+    }
+    .section__title span { background: none; color: var(--accent); }
+
+    /* ---------- CUSTOM CURSOR (ELEGANT) ---------- */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s ease;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 15px var(--accent);
+    }
+
+    /* ---------- HEADER & NAVIGATION ---------- */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.8);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--border-light);
+      transition: var(--transition-smooth);
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(120deg, #fff, var(--accent));
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .nav__list { display: flex; gap: 2.8rem; list-style: none; }
+    .nav__link { font-weight: 500; transition: var(--transition-smooth); position: relative; }
+    .nav__link::after {
+      content: ''; position: absolute; bottom: -6px; left: 0;
+      width: 0%; height: 2px; background: var(--accent); transition: width 0.3s ease;
+    }
+    .nav__link:hover { color: var(--accent); }
+    .nav__link:hover::after { width: 100%; }
+
+    /* ---------- ENHANCED HERO SECTION (Advanced Animations) ---------- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding-top: 80px;
+    }
+    /* Floating particles canvas */
+    #particle-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero__container {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 3rem;
+      background: rgba(18, 18, 24, 0.45);
+      backdrop-filter: blur(18px);
+      border-radius: 3rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2.5rem 3rem;
+      transition: transform 0.1s ease;
+      box-shadow: 0 25px 45px -12px rgba(0,0,0,0.6);
+    }
+    .hero__content h1 {
+      font-size: 4rem;
+      line-height: 1.2;
+      margin-bottom: 0.8rem;
+      letter-spacing: -0.03em;
+    }
+    .hero__greeting {
+      font-size: 1.2rem;
+      color: var(--accent);
+      letter-spacing: 3px;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+    /* dynamic typing wrapper */
+    .dynamic-roles {
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin: 1.2rem 0 1rem;
+      min-height: 3.5rem;
+      font-family: 'Space Grotesk', sans-serif;
+      background: linear-gradient(135deg, #fff, #c3b5ff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .hero__image {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+    /* morphing blob behind image */
+    .blob-bg {
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, var(--accent) 0%, rgba(124,92,255,0.2) 70%);
+      filter: blur(45px);
+      opacity: 0.6;
+      z-index: -1;
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      animation: blobMove 12s infinite alternate ease-in-out;
+    }
+    @keyframes blobMove {
+      0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translate(0, 0) scale(1);}
+      100% { border-radius: 30% 60% 70% 40% / 50% 60% 40% 50%; transform: translate(15px, -15px) scale(1.05);}
+    }
+    .hero__img {
+      width: 280px;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 35% 65% 70% 30% / 40% 50% 50% 60%;
+      border: 3px solid var(--accent);
+      box-shadow: 0 30px 40px -15px black;
+      transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+    }
+    .hero__img:hover { transform: scale(1.02) rotate(2deg); }
+    .floating-badge {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(124, 92, 255, 0.25);
+      backdrop-filter: blur(12px);
+      padding: 6px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.9rem;
+      white-space: nowrap;
+      animation: floatY 3s infinite ease;
+      border: 1px solid rgba(124,92,255,0.5);
+    }
+    @keyframes floatY {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-12px); }
+    }
+    .hero__social {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .hero__social a {
+      font-size: 1.8rem;
+      transition: var(--transition-smooth);
+      color: var(--text-primary);
+    }
+    .hero__social a:hover {
+      color: var(--accent);
+      transform: translateY(-6px) scale(1.1);
+    }
+    /* magnetic button */
+    .resume-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 2rem;
+      background: var(--accent);
+      padding: 0.9rem 2rem;
+      border-radius: 60px;
+      font-weight: 700;
+      transition: transform 0.2s, gap 0.3s;
+      border: none;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(124,92,255,0.4);
+    }
+    .resume-btn:hover {
+      background: #6c4eff;
+      gap: 18px;
+      transform: scale(1.02);
+    }
+    @media (max-width: 950px) {
+      .hero__container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 2rem;
+      }
+      .hero__social { justify-content: center; }
+      .hero__content h1 { font-size: 3rem; }
+      .dynamic-roles { font-size: 1.5rem; }
+    }
+
+    /* ========== REST OF STYLES (About, Projects, Services, Contact) ========== */
+    .about__container {
+      background: var(--bg-card);
+      border-radius: 2rem;
+      padding: 2.5rem;
+      border: 1px solid var(--border-light);
+    }
+    .about__description { font-size: 1.2rem; margin-bottom: 1.8rem; }
+    .skills-cloud { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.2rem; }
+    .skill-tag {
+      background: rgba(124, 92, 255, 0.15);
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+    .skill-tag:hover { background: var(--accent); color: white; transform: scale(1.02); }
+    .projects-slider { overflow: hidden; padding-bottom: 3rem; width: 100%; }
+    .project-card {
+      background: var(--bg-card);
+      border-radius: 1.8rem;
+      padding: 1.6rem;
+      border: 1px solid var(--border-light);
+      transition: var(--transition-smooth);
+      height: 100%;
+    }
+    .project-card:hover { transform: translateY(-12px); border-color: var(--accent); box-shadow: var(--shadow-md); }
+    .project-card h3 { font-size: 1.6rem; margin-bottom: 0.8rem; }
+    .swiper-pagination-bullet-active { background: var(--accent) !important; }
+    .swiper-button-next, .swiper-button-prev { color: var(--accent) !important; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .service-card {
+      background: var(--bg-card);
+      border-radius: 1.8rem;
+      padding: 2rem;
+      transition: 0.3s;
+      border: 1px solid var(--border-light);
+    }
+    .service-card:hover { transform: scale(1.02); border-color: var(--accent); }
+    .service-icon { font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem; }
+    .service-card h3 { font-size: 1.5rem; margin-bottom: 0.7rem; }
+    .exp-card {
+      background: var(--bg-card);
+      border-radius: 1.8rem;
+      padding: 2rem;
+      text-align: center;
+    }
+    .contact__form {
+      max-width: 550px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .contact__input, .contact__form textarea {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 1rem 1.2rem;
+      border-radius: 1.5rem;
+      color: white;
+      font-family: inherit;
+      outline: none;
+    }
+    .contact__input:focus { border-color: var(--accent); }
+    .contact__btn {
+      background: var(--accent);
+      border: none;
+      padding: 1rem;
+      font-weight: bold;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: 0.2s;
+      color: white;
+    }
+    .contact__btn:hover { background: #5b3dd0; transform: scale(1.02); }
+    .contact-email {
+      text-align: center;
+      margin-top: 1.5rem;
+      cursor: pointer;
+      width: fit-content;
+      margin-inline: auto;
+      background: rgba(124,92,255,0.1);
+      padding: 0.5rem 1.5rem;
+      border-radius: 2rem;
+      transition: 0.2s;
+    }
+    .contact-email:hover { background: var(--accent); color: white; }
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border-light);
+      margin-top: 2rem;
+    }
+    @media (max-width: 680px) {
+      .container { padding: 0 1.2rem; }
+      .hero__img { width: 220px; height: 220px; }
+      .section__title { font-size: 2rem; }
+      .nav__list { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor-dot"></div>
+
+  <header class="header" id="header">
+    <nav class="nav">
+      <a href="#" class="logo">NUTAN // AI CLOUD</a>
+      <ul class="nav__list">
+        <li><a href="#home" class="nav__link">Home</a></li>
+        <li><a href="#about" class="nav__link">About</a></li>
+        <li><a href="#projects" class="nav__link">Projects</a></li>
+        <li><a href="#contact" class="nav__link">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ENHANCED HERO SECTION WITH ADVANCED ANIMATIONS -->
+    <section class="hero" id="home">
+      <canvas id="particle-canvas"></canvas>
+      <div class="container hero__container" id="hero3dCard">
+        <div class="hero__content">
+          <span class="hero__greeting" id="greetingText">✦ HELLO, I'M</span>
+          <h1 id="mainName">Nutan Meena</h1>
+          <div class="dynamic-roles" id="typingRole"></div>
+          <p style="margin: 1rem 0 1.2rem;" id="heroDesc">Building scalable cloud infrastructure, deploying AI-driven solutions, and crafting modern digital experiences.</p>
+          <div class="hero__social">
+            <a href="https://www.instagram.com/nutan.m0888" target="_blank"><i class="ri-instagram-line"></i></a>
+            <a href="https://www.linkedin.com/in/nutan-meena" target="_blank"><i class="ri-linkedin-line"></i></a>
+            <a href="https://github.com/NutanMeena" target="_blank"><i class="ri-github-line"></i></a>
+          </div>
+          <a href="#" class="resume-btn" id="resumeFake">RESUME <i class="ri-download-line"></i></a>
+        </div>
+        <div class="hero__image">
+          <div class="blob-bg"></div>
+          <img src="img/imag1.jpg" alt="Nutan" class="hero__img" id="profileImg">
+          <div class="floating-badge">✦ Cloud Architect ✦</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="section" id="about">
+      <div class="container">
+        <h2 class="section__title">About <span>Me</span></h2>
+        <div class="about__container">
+          <p class="about__description">Enthusiastic Cloud & DevOps developer with expertise in AWS, Docker, Kubernetes, and MLOps. I design resilient infrastructure and automated pipelines that bring AI models to production. Passionate about solving real-world problems with elegant tech solutions.</p>
+          <div class="skills-cloud">
+            <span class="skill-tag">AWS</span><span class="skill-tag">Docker</span><span class="skill-tag">Kubernetes</span>
+            <span class="skill-tag">Python</span><span class="skill-tag">TensorFlow</span><span class="skill-tag">React</span>
+            <span class="skill-tag">Node.js</span><span class="skill-tag">Terraform</span><span class="skill-tag">GitHub Actions</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS SLIDER -->
+    <section class="section" id="projects">
+      <div class="container">
+        <h2 class="section__title">Featured <span>Projects</span></h2>
+        <div class="swiper projects-slider">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide"><div class="project-card"><h3>⚡ ML Model Deployment</h3><p>TensorFlow + Docker + FastAPI. Scalable model serving, deployed on AWS ECS with auto-scaling.</p></div></div>
+            <div class="swiper-slide"><div class="project-card"><h3>☁️ Cloud Chat App</h3><p>Serverless WebSocket chat on AWS (API Gateway, Lambda, DynamoDB). Real-time messaging with high concurrency.</p></div></div>
+            <div class="swiper-slide"><div class="project-card"><h3>🗣️ Alexa Weather Skill</h3><p>Voice-powered weather assistant using AWS Lambda & Alexa SDK, live weather API integration.</p></div></div>
+            <div class="swiper-slide"><div class="project-card"><h3>📊 ETL Data Pipeline</h3><p>Apache Airflow + Redshift + Glue. Automated analytics dashboards, 70% reduction in reporting time.</p></div></div>
+          </div>
+          <div class="swiper-pagination"></div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section__title">What I <span>Offer</span></h2>
+        <div class="services-grid">
+          <div class="service-card"><div class="service-icon"><i class="ri-code-box-line"></i></div><h3>Full-Stack Dev</h3><p>React, Node.js, modern UI/UX and performance optimization.</p></div>
+          <div class="service-card"><div class="service-icon"><i class="ri-cloud-line"></i></div><h3>Cloud & DevOps</h3><p>CI/CD, K8s, IaC, AWS cost optimization, scalable infrastructure.</p></div>
+          <div class="service-card"><div class="service-icon"><i class="ri-brain-line"></i></div><h3>AI/ML Engineering</h3><p>Model training, deployment, MLOps pipelines, LLM integration.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section__title">Work <span>Experience</span></h2>
+        <div class="exp-card">
+          <h3 style="color: var(--accent);">Data Analytics Intern @ Oasis Infobyte (2024)</h3>
+          <p>EDA, data cleaning, K-Means clustering. Improved model accuracy by 18% via feature engineering.</p>
+          <div class="skills-cloud" style="justify-content: center; margin-top: 1rem;"><span class="skill-tag">Python</span><span class="skill-tag">Pandas</span><span class="skill-tag">Scikit-learn</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" id="contact">
+      <div class="container">
+        <h2 class="section__title">Let's <span>Connect</span></h2>
+        <div>
+          <form id="contactForm" class="contact__form">
+            <input type="text" placeholder="Your Name" class="contact__input" required>
+            <input type="email" placeholder="Email Address" class="contact__input" required>
+            <textarea rows="4" placeholder="Message" class="contact__input" required></textarea>
+            <button type="submit" class="contact__btn">Send Message <i class="ri-send-plane-line"></i></button>
+          </form>
+          <div class="contact-email" id="copyEmailBtn"><i class="ri-mail-line"></i> meenanutan37@gmail.com <i class="ri-file-copy-line"></i></div>
+          <p style="text-align: center; font-size: 0.8rem; margin-top: 1rem;">✨ Let's build something extraordinary together</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Nutan Meena — All rights reserved. <br> Crafted with ❤️ & cloud magic</p>
+  </footer>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <script src="https://unpkg.com/scrollreveal"></script>
+  <script>
+    (function() {
+      // ----------------------------- ADVANCED HOME ANIMATIONS -----------------------------
+      // 1. Particle System for Hero Background
+      const canvas = document.getElementById('particle-canvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let particleCount = 80;
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.vx = (Math.random() - 0.5) * 0.6;
+          this.vy = (Math.random() - 0.5) * 0.6;
+          this.size = Math.random() * 2.5 + 0.8;
+          this.alpha = Math.random() * 0.4 + 0.2;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < 0) this.x = canvas.width;
+          if (this.x > canvas.width) this.x = 0;
+          if (this.y < 0) this.y = canvas.height;
+          if (this.y > canvas.height) this.y = 0;
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(124, 92, 255, ${this.alpha})`;
+          ctx.fill();
+        }
+      }
+      function initParticles() {
+        particles = [];
+        for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+      }
+      function animateParticles() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animateParticles);
+      }
+      initParticles();
+      animateParticles();
+
+      // 2. Advanced Typing Effect (Loop through roles)
+      const roles = ["Cloud/DevOps Engineer", "AI/ML Specialist", "K8s Architect", "Full-Stack Innovator"];
+      let roleIndex = 0;
+      let charIndex = 0;
+      let isDeleting = false;
+      const typingElement = document.getElementById('typingRole');
+      function typeEffect() {
+        const currentRole = roles[roleIndex];
+        if (isDeleting) {
+          typingElement.textContent = currentRole.substring(0, charIndex - 1);
+          charIndex--;
+          if (charIndex === 0) {
+            isDeleting = false;
+            roleIndex = (roleIndex + 1) % roles.length;
+          }
+        } else {
+          typingElement.textContent = currentRole.substring(0, charIndex + 1);
+          charIndex++;
+          if (charIndex === currentRole.length) {
+            isDeleting = true;
+            setTimeout(() => {}, 1800);
+          }
+        }
+        setTimeout(typeEffect, isDeleting ? 80 : 120);
+      }
+      typeEffect();
+
+      // 3. GSAP ScrollTrigger + Advanced staggers for Hero Elements
+      gsap.registerPlugin(ScrollTrigger);
+      // initial hero entrance animation (overwrite reveals)
+      gsap.fromTo('.hero__container', 
+        { opacity: 0, y: 60, scale: 0.97 },
+        { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "back.out(0.6)", delay: 0.2 }
+      );
+      gsap.fromTo('#greetingText', { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, delay: 0.4 });
+      gsap.fromTo('#mainName', { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9, delay: 0.6 });
+      gsap.fromTo('#typingRole', { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7, delay: 0.9 });
+      gsap.fromTo('#heroDesc', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, delay: 1.1 });
+      gsap.fromTo('.hero__social a', { y: 30, opacity: 0, stagger: 0.1 }, { y: 0, opacity: 1, stagger: 0.1, duration: 0.6, delay: 1.3 });
+      gsap.fromTo('#resumeFake', { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, delay: 1.6 });
+      gsap.fromTo('#profileImg', { rotate: -5, scale: 0.9, opacity: 0 }, { rotate: 0, scale: 1, opacity: 1, duration: 1, ease: "elastic.out(1, 0.5)", delay: 0.5 });
+
+      // 3D Tilt (Enhanced)
+      const heroCard = document.getElementById('hero3dCard');
+      document.addEventListener('mousemove', (e) => {
+        if (!heroCard) return;
+        const rect = heroCard.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const deltaX = (e.clientX - centerX) / 20;
+        const deltaY = (e.clientY - centerY) / 20;
+        heroCard.style.transform = `perspective(1200px) rotateY(${deltaX}deg) rotateX(${-deltaY}deg)`;
+      });
+      heroCard.addEventListener('mouseleave', () => {
+        heroCard.style.transform = `perspective(1200px) rotateY(0deg) rotateX(0deg)`;
+      });
+
+      // Magnetic button effect
+      const btn = document.querySelector('.resume-btn');
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px) scale(1.02)`;
+      });
+      btn.addEventListener('mouseleave', () => { btn.style.transform = 'translate(0,0) scale(1)'; });
+
+      // Rest of sections reveal via ScrollReveal + extra gsap for smoothness
+      ScrollReveal({ reset: false, distance: '30px', duration: 800, delay: 100, easing: 'cubic-bezier(0.2, 0.9, 0.4, 1.1)' });
+      ScrollReveal().reveal('.about__container, .project-card, .service-card, .exp-card, .contact__form, .contact-email', { interval: 70, origin: 'bottom' });
+      
+      // Custom cursor interactions
+      const cursor = document.querySelector('.cursor-dot');
+      document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+      });
+      document.querySelectorAll('a, button, .service-card, .project-card, .contact__btn').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.style.transform = 'translate(-50%, -50%) scale(2.2)');
+        el.addEventListener('mouseleave', () => cursor.style.transform = 'translate(-50%, -50%) scale(1)');
+      });
+
+      // Swiper projects
+      new Swiper('.projects-slider', {
+        loop: true, spaceBetween: 30, slidesPerView: 1,
+        pagination: { el: '.swiper-pagination', clickable: true },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        breakpoints: { 768: { slidesPerView: 2, spaceBetween: 25 }, 1024: { slidesPerView: 2.5, spaceBetween: 30 } },
+        autoplay: { delay: 4000, disableOnInteraction: false }
+      });
+
+      // Contact handlers
+      document.getElementById('contactForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('✨ Message sent! (Demo) I will reach out soon.');
+        e.target.reset();
+      });
+      document.getElementById('copyEmailBtn')?.addEventListener('click', () => {
+        navigator.clipboard.writeText('meenanutan37@gmail.com');
+        const btnEl = document.getElementById('copyEmailBtn');
+        const original = btnEl.innerHTML;
+        btnEl.innerHTML = '<i class="ri-check-line"></i> Copied!';
+        setTimeout(() => btnEl.innerHTML = original, 2000);
+      });
+      document.getElementById('resumeFake')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('📄 Resume download demo — contact me for full portfolio PDF.');
+      });
+
+      // active nav highlight
+      const sections = document.querySelectorAll('section[id]');
+      window.addEventListener('scroll', () => {
+        let current = '';
+        const scrollY = window.pageYOffset;
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop - 120;
+          if (scrollY >= sectionTop) current = section.getAttribute('id');
+        });
+        document.querySelectorAll('.nav__link').forEach(link => {
+          link.style.color = '';
+          link.classList.remove('active-link');
+          if (link.getAttribute('href') === `#${current}`) {
+            link.style.color = '#7c5cff';
+            link.classList.add('active-link');
+          }
+        });
+      });
+      
+      // floating blob animation + periodic pulse
+      const blob = document.querySelector('.blob-bg');
+      if(blob) {
+        setInterval(() => {
+          blob.style.transform = 'scale(1.02)';
+          setTimeout(() => blob.style.transform = 'scale(1)', 800);
+        }, 5000);
+      }
+    })();
+  </script>
+</body>
+</html>
